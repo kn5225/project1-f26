@@ -13,10 +13,10 @@ import random,time,sys
 class Dictionary:
 
 
-    def __init__(self, filename):
+    def __init__(self, filename = "N/A"):
         self.__name = filename
         self.__words = []
-
+        self.__dict = {}
         try:
             with filename as f:
                 self.__words = f.readlines()
@@ -31,8 +31,13 @@ class Dictionary:
     def get_size(self):
         return len(self.__words)
 
-    def get_random_list(self):
-        return random.sample(self.__words, 5)
+    def get_random_list(self, n):
+        return random.sample(self.__words, n)
+
+    def insert(self, element):
+        self.__dict[]
+        
+    
 
 
     
@@ -54,8 +59,6 @@ class Dictionary:
         t2 = time.process_time() #capture time
         return t2-t1
         
-
-    def in
     
     @staticmethod  # provided to you
     def get_word_combination(word, combs=['']):
