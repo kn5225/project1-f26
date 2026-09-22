@@ -13,9 +13,26 @@ import random,time,sys
 class Dictionary:
 
 
+    def __init__(self, filename):
+        self.__name = filename
+        self.__words = []
 
-    #### To complete
+        try:
+            with filename as f:
+                self.__words = f.readlines()
+        except:
+            print("File "+filename+".txt does not exist!")
+            sys.exit(0)
+        random.seed(8)
+    
+    def get_name(self):
+        return self.__name
+    
+    def get_size(self):
+        return len(self.__words)
 
+    def get_random_list(self):
+        return random.sample(self.__words, 5)
 
 
     
@@ -38,7 +55,7 @@ class Dictionary:
         return t2-t1
         
 
-
+    def in
     
     @staticmethod  # provided to you
     def get_word_combination(word, combs=['']):
