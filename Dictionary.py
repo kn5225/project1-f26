@@ -1,8 +1,8 @@
 # Your names:
-#
-#
-#
-#
+# Kanav Nagpal
+# Spire ID: 35296223
+# Gabriel Walters
+# Spire ID: 35319051
 
 # no other modules allowed
 import random,time,sys
