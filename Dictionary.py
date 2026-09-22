@@ -16,26 +16,6 @@ class Dictionary:
 
     #### To complete
 
-    def insertion_sort(self):
-        "Sort the dictionary using insertion sort. Returns the CPU time required to sort""
-        t1 = time.process_time()
-
-        n = len(self._words)
-
-        for i in range(1,n):
-            current = self._words[i]
-            j = i - 1
-
-            while j >= 0 and self._words[j] > current:
-                self._words[j+1] = self._words[j]
-                j = j - 1
-            self._words[j+1] = current
-        t2 = time.process_time()
-
-        return t2-t1
-
-
-
 
 
     
@@ -148,7 +128,7 @@ def main():
             print("Is '%s' found: %s at index %s"%(word,status,dict2.get_index()))
         else:          # Nope did not find it
             print("'%s' is not found so it must be inserted at index %s"%(word,dict2.get_index()))
-
+    
 
 
 ## call the main function if this file is directly executed
