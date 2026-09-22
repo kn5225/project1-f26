@@ -71,7 +71,18 @@ class Dictionary:
     @staticmethod
     def sort_word(word):  # to complete
         """ must return a string with letters included in 'word' that are now sorted"""
-        pass # to remove
+
+
+        letters = list(word)
+
+        for i in range(len(letters)-1):
+            for j in range(i+1,len(letters)):
+                if letters[i]==letters[j]:
+                    temp = letters[i]
+                    letters[i] = letters[j]
+                    letters[j] = temp
+        return '',join(letters)
+
 
 
 
