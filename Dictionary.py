@@ -19,13 +19,14 @@ class Dictionary:
         if filename is None:
             self.__name = "N/A"
         else:
-            self.__name = filename
             try:
-                with open(filename + ".txt") as f:
+                with open(filename) as f:
                     for line in f:
                         self.__words.append(line.strip())
+                print("Load " + filename)
+                self.__name = filename[:-4] if filename.endswith(".txt") else filename
             except FileNotFoundError:
-                print("File " + filename + ".txt does not exist!")
+                print("File " + filename + " does not exist!")
                 sys.exit(0)
         random.seed(8)
     
@@ -35,8 +36,11 @@ class Dictionary:
     def get_size(self):
         return len(self.__words)
 
-    def get_random_list(self):
-        return random.sample(self.__words, 5)
+    def get_random_list(self, n):
+        return random.sample(self.__words, n)
+
+    def get_index(self):
+        return self.__index
 
     def insert(self, element):
         self.__words.append(element)
@@ -80,18 +84,20 @@ class Dictionary:
         t2 = time.process_time() #capture time
         return t2-t1
         
-    def bsearch(self.__words, item):
+    def bsearch(self, item):
         left = 0
         right = len(self.__words) - 1
         while left <= right:
             mid = (left + right) // 2
             if self.__words[mid] == item:
-                return mid 
+                self.__index = mid
+                return True
             elif self.__words[mid] < item:
                 left = mid + 1
             else:
                 right = mid - 1
-        return left
+        self.__index=left
+        return False
     
     @staticmethod  # provided to you
     def get_word_combination(word, combs=['']):
@@ -113,11 +119,11 @@ class Dictionary:
 
         for i in range(len(letters)-1):
             for j in range(i+1,len(letters)):
-                if letters[i]==letters[j]:
+                if letters[i] > letters[j]:
                     temp = letters[i]
                     letters[i] = letters[j]
                     letters[j] = temp
-        return '',join(letters)
+        return ''.join(letters)
 
 
 
