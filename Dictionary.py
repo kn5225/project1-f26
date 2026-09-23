@@ -35,7 +35,15 @@ class Dictionary:
         return random.sample(self.__words, 5)
 
 
-    
+
+    t1 = time.process_time()
+
+    # code/function you want to measure
+
+    t2 = time.process_time()
+
+    return t2 - t1
+
     def selection_sort(self):    #provided to you
         """Perfom selection sort, must return the time it takes to sort the list of words
         Remark: Routine works 'in-place'"""
