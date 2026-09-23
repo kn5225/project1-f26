@@ -13,16 +13,20 @@ import random,time,sys
 class Dictionary:
 
 
-    def __init__(self, filename):
-        self.__name = filename
+    def __init__(self, filename=None):
         self.__words = []
-
-        try:
-            with filename as f:
-                self.__words = f.readlines()
-        except:
-            print("File "+filename+".txt does not exist!")
-            sys.exit(0)
+        self.__index = -1
+        if filename is None:
+            self.__name = "N/A"
+        else:
+            self.__name = filename
+            try:
+                with open(filename + ".txt") as f:
+                    for line in f:
+                        self.__words.append(line.strip())
+            except FileNotFoundError:
+                print("File " + filename + ".txt does not exist!")
+                sys.exit(0)
         random.seed(8)
     
     def get_name(self):
@@ -34,15 +38,29 @@ class Dictionary:
     def get_random_list(self):
         return random.sample(self.__words, 5)
 
+    def insert(self, element):
+        self.__words.append(element)
 
+    def display(self):
+        for i in self.__words:
+            print(i)
 
-    t1 = time.process_time()
+    def shuffle(self):
+        t1 = time.process_time()
+        for i in range(len(self.__words) -1, 0, -1):
+            j = random.randint(0,i)
+            self.__words[i], self.__words[j] = self.__words[j], self.__words[i]
+        t2 = time.process_time()
+        return t2 - t1
 
-    # code/function you want to measure
-
-    t2 = time.process_time()
-
-    return t2 - t1
+    def lsearch(self, item):
+        status = False
+        for i in range(0, len(self.__words)):
+            if self.__words[i] == item:
+                status = True
+                self.__index = i
+                break
+        return status
 
     def selection_sort(self):    #provided to you
         """Perfom selection sort, must return the time it takes to sort the list of words
@@ -62,8 +80,18 @@ class Dictionary:
         t2 = time.process_time() #capture time
         return t2-t1
         
-
-    def in
+    def bsearch(self.__words, item):
+        left = 0
+        right = len(self.__words) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if self.__words[mid] == item:
+                return mid 
+            elif self.__words[mid] < item:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return left
     
     @staticmethod  # provided to you
     def get_word_combination(word, combs=['']):
