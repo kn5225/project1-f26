@@ -4,13 +4,20 @@
 # Gabriel Walters
 # Spire ID: 35319051
 
+
 # no other modules allowed
 import random,time,sys
 
 
 
 
+
+
+
+
 class Dictionary:
+
+
 
 
     def __init__(self, filename=None):
@@ -29,25 +36,30 @@ class Dictionary:
                 print("File " + filename + " does not exist!")
                 sys.exit(0)
         random.seed(8)
-    
+   
     def get_name(self):
         return self.__name
-    
+   
     def get_size(self):
         return len(self.__words)
+
 
     def get_random_list(self, n):
         return random.sample(self.__words, n)
 
+
     def get_index(self):
         return self.__index
+
 
     def insert(self, element):
         self.__words.append(element)
 
+
     def display(self):
         for i in self.__words:
             print(i)
+
 
     def shuffle(self):
         t1 = time.process_time()
@@ -56,6 +68,7 @@ class Dictionary:
             self.__words[i], self.__words[j] = self.__words[j], self.__words[i]
         t2 = time.process_time()
         return t2 - t1
+
 
     def lsearch(self, item):
         status = False
@@ -66,6 +79,7 @@ class Dictionary:
                 break
         return status
 
+
     def selection_sort(self):    #provided to you
         """Perfom selection sort, must return the time it takes to sort the list of words
         Remark: Routine works 'in-place'"""
@@ -75,7 +89,7 @@ class Dictionary:
             #find minimum between out+1 and n-1
             imin=out
             for i in range(out+1,n):  #inner loop
-                if self.__words[i]<self.__words[imin]: 
+                if self.__words[i]<self.__words[imin]:
                     imin=i #update  minimum index
             #swap (3 step here)
             temp=self.__words[imin]
@@ -83,7 +97,7 @@ class Dictionary:
             self.__words[out]=temp
         t2 = time.process_time() #capture time
         return t2-t1
-        
+       
     def bsearch(self, item):
         left = 0
         right = len(self.__words) - 1
@@ -98,7 +112,7 @@ class Dictionary:
                 right = mid - 1
         self.__index=left
         return False
-    
+   
     @staticmethod  # provided to you
     def get_word_combination(word, combs=['']):
         """ return a list that contains all the letter combinations (all length) of the input 'word' """
@@ -108,14 +122,19 @@ class Dictionary:
         combs = combs + list(map(lambda x: x+head, combs))
         return Dictionary.get_word_combination(tail, combs)
 
-    
+
+   
+
 
     @staticmethod
     def sort_word(word):  # to complete
         """ must return a string with letters included in 'word' that are now sorted"""
 
 
+
+
         letters = list(word)
+
 
         for i in range(len(letters)-1):
             for j in range(i+1,len(letters)):
@@ -124,47 +143,111 @@ class Dictionary:
                     letters[i] = letters[j]
                     letters[j] = temp
         return ''.join(letters)
-
-
-
+		
+	
 
 
 
     
+    def insertion_sort(self):
+        t1 = time.process_time()
+        n = self.get_size()
+        for i in range(1,n):
+            key = self.__words[i]
+            j = i - 1
+            while j >= 0 and self.__words[j] > key:
+                self.__words[j + 1] = self.__words[j]
+                j -= 1
+            self.__words[j+1] = key
+        t2 = time.process_time()
+        return t2 - t1
 
-    
+
+    def enhanced_insertion_sort(self):
+        t1 = time.process_time()
+        n = self.get_size()
+
+
+        for i in range(1,n):
+            key = self.__words[i]
+            low = 0
+            high = i
+
+
+            while low < high:
+                mid = (low + high) // 2
+                if self.__words[mid] <= key:
+                    low = mid + 1
+                else: 
+                    high = mid
+            j = i
+            while j > low:
+                self.__words[j] = self.__words[j-1]
+                j -= 1
+
+
+            self.__words[low] = key
+
+
+        t2 = time.process_time()
+
+
+        return t2 - t1
+
+
+    def save(self, filename):
+        with open(filename, "w") as f:
+            f.writelines([i+"\n" for i in self.__words])
+        print("Save", filename)
+
+
+
+
+
+
+   
+
+
+   
 ########################################################################
 ########################################################################
+
+
 
 
 def main():
+
 
     ### step-1 test constructor
     name=input("Enter dictionary name (from file 'name'.txt): ")    
     dict1=Dictionary(name+".txt")
 
+
     ### step-2 test get_name, get_size, get_random_list        
-    print('Name main dictionary:',dict1.get_name())   
-    print('Size main dictionary:',dict1.get_size()) 
+    print('Name main dictionary:',dict1.get_name())  
+    print('Size main dictionary:',dict1.get_size())
     print("Five random words:",end=" ")
     rlist=dict1.get_random_list(5) # 5 means the number of random words we want
     for w in rlist: print(w,end=" ")
     print("\n")
 
+
     ### step-3 test constructor again
     dict2=Dictionary()
     print('Name extracted dictionary:',dict2.get_name())
-    
+   
     ### step-4 test insert and display
     for w in rlist: dict2.insert(w)
     print('Display extracted dictionary:')
     dict2.display()
 
-    ### step-5 test shuffle 
+
+    ### step-5 test shuffle
     t=dict2.shuffle()
     print('\nExtracted dictionary shuffled in %ss:'%t)
     print('Display extracted dictionary:')
     dict2.display()
+
 
     ### step-6 test linear search
     word="morning"
@@ -172,11 +255,13 @@ def main():
     status=dict2.lsearch(word)
     print("Is '%s' found: %s at index %s"%(word,status,dict2.get_index()))
 
+
     ### step-7 sort extracted using selection sort (provided to you)
     t=dict2.selection_sort()
     print('\nExtracted dictionary sorted in %ss:'%t)
     print('Display extracted dictionary:')
     dict2.display()
+
 
     ### step-8 test binary search (find it)
     words=["morning","night"]
@@ -187,9 +272,14 @@ def main():
             print("Is '%s' found: %s at index %s"%(word,status,dict2.get_index()))
         else:          # Nope did not find it
             print("'%s' is not found so it must be inserted at index %s"%(word,dict2.get_index()))
-    
+   
+
+
 
 
 ## call the main function if this file is directly executed
 if __name__=="__main__":
     main()
+
+
+
