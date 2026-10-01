@@ -10411,7 +10411,7 @@ atypiques
 au
 au-dedans
 au-dehors
-au-del�
+au-delà
 au-dessous
 au-dessus
 au-devant
@@ -19042,10 +19042,10 @@ cela
 celer
 celle
 celle-ci
-celle-l�
+celle-là
 celles
 celles-ci
-celles-l�
+celles-là
 cellier
 celliers
 cellophane
@@ -19059,7 +19059,7 @@ cellulosiques
 celluloïd
 celui
 celui-ci
-celui-l�
+celui-là
 cendre
 cendres
 cendrier
@@ -19392,7 +19392,7 @@ cetera
 cette
 ceux
 ceux-ci
-ceux-l�
+ceux-là
 cf.
 cg
 ch.
@@ -31417,7 +31417,7 @@ degrés
 dehors
 delta
 deltas
-del�
+delà
 demain
 demanda
 demandaient
@@ -32110,7 +32110,7 @@ devrions
 devrons
 devront
 dextérité
-deç�
+deçà
 dg
 diable
 diablerie
@@ -39864,7 +39864,7 @@ déjugé
 déjugée
 déjugées
 déjugés
-déj�
+déjà
 délabialiser
 délabrant
 délabrement
@@ -76044,7 +76044,7 @@ lyrisme
 lys
 lyse
 lyses
-l�
+là
 là-bas
 là-haut
 lâcha
@@ -91356,7 +91356,7 @@ pierreuses
 pierreux
 pies
 pies-grièches
-piet�
+pietà
 pietàs
 pieu
 pieuse
@@ -109156,7 +109156,7 @@ revoici
 revoie
 revoient
 revoies
-revoil�
+revoilà
 revoir
 revoirs
 revois
@@ -133393,7 +133393,7 @@ voilier
 voiliers
 voilure
 voilures
-voil�
+voilà
 voilèrent
 voilé
 voilée
@@ -134332,7 +134332,7 @@ zététiques
 zézaiement
 zézaiements
 zézayer
-�
+à
 à-coup
 à-coups
 à-côté
@@ -134399,7 +134399,7 @@ zézayer
 âtre
 âtres
 ça
-ç�
+çà
 ème
 ère
 ères

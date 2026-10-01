@@ -1,12 +1,22 @@
-# Your names:
+# Your names: 
 # Kanav Nagpal
 # Spire ID: 35296223
 # Gabriel Walters
 # Spire ID: 35319051
 
 
+
+
 # no other modules allowed
 import random,time,sys
+
+
+
+
+
+
+
+
 
 
 
@@ -20,18 +30,23 @@ class Dictionary:
 
 
 
+
+
+
+
     def __init__(self, filename=None):
         self.__words = []
         self.__index = -1
+        self.__steps = 0
         if filename is None:
             self.__name = "N/A"
         else:
             try:
-                with open(filename) as f:
+                with open(filename, encoding='utf-8') as f:
                     for line in f:
                         self.__words.append(line.strip())
                 print("Load " + filename)
-                self.__name = filename[:-4] if filename.endswith(".txt") else filename
+                self.__name = filename
             except FileNotFoundError:
                 print("File " + filename + " does not exist!")
                 sys.exit(0)
@@ -44,21 +59,31 @@ class Dictionary:
         return len(self.__words)
 
 
+
+
     def get_random_list(self, n):
         return random.sample(self.__words, n)
+
+
 
 
     def get_index(self):
         return self.__index
 
 
+
+
     def insert(self, element):
         self.__words.append(element)
+
+
 
 
     def display(self):
         for i in self.__words:
             print(i)
+
+
 
 
     def shuffle(self):
@@ -70,6 +95,8 @@ class Dictionary:
         return t2 - t1
 
 
+
+
     def lsearch(self, item):
         status = False
         for i in range(0, len(self.__words)):
@@ -78,6 +105,8 @@ class Dictionary:
                 self.__index = i
                 break
         return status
+
+
 
 
     def selection_sort(self):    #provided to you
@@ -101,16 +130,20 @@ class Dictionary:
     def bsearch(self, item):
         left = 0
         right = len(self.__words) - 1
+        steps = 1 #Minimum number of steps to find item has to be 1
         while left <= right:
             mid = (left + right) // 2
             if self.__words[mid] == item:
                 self.__index = mid
+                self.__steps = steps
                 return True
             elif self.__words[mid] < item:
                 left = mid + 1
             else:
                 right = mid - 1
+            steps+=1
         self.__index=left
+        self.__steps = steps
         return False
    
     @staticmethod  # provided to you
@@ -123,19 +156,17 @@ class Dictionary:
         return Dictionary.get_word_combination(tail, combs)
 
 
+
+
    
+
+
 
 
     @staticmethod
     def sort_word(word):  # to complete
         """ must return a string with letters included in 'word' that are now sorted"""
-
-
-
-
         letters = list(word)
-
-
         for i in range(len(letters)-1):
             for j in range(i+1,len(letters)):
                 if letters[i] > letters[j]:
@@ -143,12 +174,7 @@ class Dictionary:
                     letters[i] = letters[j]
                     letters[j] = temp
         return ''.join(letters)
-		
-	
-
-
-
-    
+   
     def insertion_sort(self):
         t1 = time.process_time()
         n = self.get_size()
@@ -163,22 +189,20 @@ class Dictionary:
         return t2 - t1
 
 
+
+
     def enhanced_insertion_sort(self):
         t1 = time.process_time()
         n = self.get_size()
-
-
         for i in range(1,n):
             key = self.__words[i]
             low = 0
             high = i
-
-
             while low < high:
                 mid = (low + high) // 2
                 if self.__words[mid] <= key:
                     low = mid + 1
-                else: 
+                else:
                     high = mid
             j = i
             while j > low:
@@ -186,21 +210,107 @@ class Dictionary:
                 j -= 1
 
 
+
+
             self.__words[low] = key
-
-
         t2 = time.process_time()
-
-
         return t2 - t1
 
 
+
+
     def save(self, filename):
-        with open(filename, "w") as f:
+        with open(filename, "w", encoding="utf-8") as f:
             f.writelines([i+"\n" for i in self.__words])
         print("Save", filename)
 
 
+    def get_steps(self):
+        return self.__steps
+  
+    def spell_check(self, file):
+        if file not in ['letter.txt', 'sample_english.txt', 'sample_french.txt', 'sample_spanish.txt']:
+            print('File', file, 'does not exist!')
+        else:
+            print()
+            with open(file, "r", encoding="utf-8") as f:
+                nextline = f.readline()
+                punc=r"""’!()-[]{};:’"\,<>./?@#$%^&*_~’"""
+                while nextline != '':
+                    if nextline == "\n":
+                        print()
+                        nextline=f.readline()
+                        continue
+                    clean_nextline = nextline.rstrip()
+                    nextwords = clean_nextline.split(' ')
+                    for i in range(0, len(nextwords)):
+                        word = nextwords[i]
+                        word_low = word.strip(punc).lower()
+                        status = self.bsearch(word_low)
+                        if status == False:
+                            nextwords[i] = '(' + word + ')'
+                    print(' '.join(nextwords))
+                    nextline = f.readline()
+				
+
+
+    def anagram(self, word): 
+        anagrams = []
+        sorted_word = Dictionary.sort_word(word)
+        for current_word in self.__words:
+            if len(current_word) == len(word):
+                sorted_current_word = Dictionary.sort_word(current_word)
+                if sorted_current_word == sorted_word:
+                    anagrams.append(current_word)
+        return anagrams
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -208,9 +318,15 @@ class Dictionary:
    
 
 
+
+
    
 ########################################################################
 ########################################################################
+
+
+
+
 
 
 
@@ -218,9 +334,13 @@ class Dictionary:
 def main():
 
 
+
+
     ### step-1 test constructor
     name=input("Enter dictionary name (from file 'name'.txt): ")    
     dict1=Dictionary(name+".txt")
+
+
 
 
     ### step-2 test get_name, get_size, get_random_list        
@@ -230,6 +350,8 @@ def main():
     rlist=dict1.get_random_list(5) # 5 means the number of random words we want
     for w in rlist: print(w,end=" ")
     print("\n")
+
+
 
 
     ### step-3 test constructor again
@@ -242,11 +364,15 @@ def main():
     dict2.display()
 
 
+
+
     ### step-5 test shuffle
     t=dict2.shuffle()
     print('\nExtracted dictionary shuffled in %ss:'%t)
     print('Display extracted dictionary:')
     dict2.display()
+
+
 
 
     ### step-6 test linear search
@@ -256,11 +382,15 @@ def main():
     print("Is '%s' found: %s at index %s"%(word,status,dict2.get_index()))
 
 
+
+
     ### step-7 sort extracted using selection sort (provided to you)
     t=dict2.selection_sort()
     print('\nExtracted dictionary sorted in %ss:'%t)
     print('Display extracted dictionary:')
     dict2.display()
+
+
 
 
     ### step-8 test binary search (find it)
@@ -277,9 +407,19 @@ def main():
 
 
 
+
+
+
+
 ## call the main function if this file is directly executed
 if __name__=="__main__":
     main()
+
+
+
+
+
+
 
 
 
