@@ -12,27 +12,27 @@ import random, time, sys
 class Dictionary:
 
     def __init__(self, filename=None):
-        self.__words = []
-        self.__index = -1
-        self.__steps = 0
-        self.__score_list = []
+        self.__words = []        # private list of words
+        self.__index = -1        # index found by the last search
+        self.__steps = 0         # steps used by the last binary search
+        self.__score_list = []   # scrabble score of each word
 
         if filename is None:
-            self.__name = "N/A"
+            self.__name = "N/A"  # empty dictionary
         else:
             try:
                 with open(filename, encoding='utf-8') as f:
                     for line in f:
-                        self.__words.append(line.strip())
+                        self.__words.append(line.strip())  # drop the newline
 
                 print("Load " + filename)
                 self.__name = filename
 
             except FileNotFoundError:
                 print("File " + filename + " does not exist!")
-                sys.exit(0)
+                sys.exit(0)  # stop the program
 
-        random.seed(8)
+        random.seed(8)  # fixed seed so results are reproducible
 
     def get_name(self):
         return self.__name
@@ -41,13 +41,13 @@ class Dictionary:
         return len(self.__words)
 
     def get_random_list(self, n):
-        return random.sample(self.__words, n)
+        return random.sample(self.__words, n)  # n different random words
 
     def get_index(self):
         return self.__index
 
     def insert(self, element):
-        self.__words.append(element)
+        self.__words.append(element)  # add at the end (unsorted)
 
     def display(self, score=False):
         if not score:
@@ -55,11 +55,12 @@ class Dictionary:
                 print(i)
         else:
             for i in range(self.get_size()):
-                print(self.__words[i], self.__score_list[i])
+                print(self.__words[i], self.__score_list[i])  # word and its score
 
     def shuffle(self):
         t1 = time.process_time()
 
+        # Fisher-Yates: swap each item with a random item at or before it
         for i in range(len(self.__words) - 1, 0, -1):
             j = random.randint(0, i)
             self.__words[i], self.__words[j] = (
@@ -73,10 +74,11 @@ class Dictionary:
     def lsearch(self, item):
         status = False
 
+        # linear search: check every word from the start
         for i in range(0, len(self.__words)):
             if self.__words[i] == item:
                 status = True
-                self.__index = i
+                self.__index = i  # remember where it was found
                 break
 
         return status
@@ -107,25 +109,26 @@ class Dictionary:
     def bsearch(self, item):
         left = 0
         right = len(self.__words) - 1
-        steps = 1  # Minimum number of steps to find item has to be 1
+        steps = 1  # minimum number of steps to find item has to be 1
 
+        # binary search: the list must already be sorted
         while left <= right:
             mid = (left + right) // 2
 
             if self.__words[mid] == item:
-                self.__index = mid
+                self.__index = mid      # found at mid
                 self.__steps = steps
                 return True
 
             elif self.__words[mid] < item:
-                left = mid + 1
+                left = mid + 1          # item is in the right half
 
             else:
-                right = mid - 1
+                right = mid - 1         # item is in the left half
 
             steps += 1
 
-        self.__index = left
+        self.__index = left  # not found: left is where it would be inserted
         self.__steps = steps
         return False
 
@@ -149,6 +152,7 @@ class Dictionary:
 
         letters = list(word)
 
+        # swap any pair that is out of order, so the smallest letter ends up first
         for i in range(len(letters) - 1):
             for j in range(i + 1, len(letters)):
                 if letters[i] > letters[j]:
@@ -163,14 +167,15 @@ class Dictionary:
         n = self.get_size()
 
         for i in range(1, n):
-            key = self.__words[i]
+            key = self.__words[i]  # word to place in the sorted part
             j = i - 1
 
+            # shift larger words one slot to the right
             while j >= 0 and self.__words[j] > key:
                 self.__words[j + 1] = self.__words[j]
                 j -= 1
 
-            self.__words[j + 1] = key
+            self.__words[j + 1] = key  # drop the word into its slot
 
         t2 = time.process_time()
         return t2 - t1
@@ -184,6 +189,7 @@ class Dictionary:
             low = 0
             high = i
 
+            # binary search the sorted part for the insertion position
             while low < high:
                 mid = (low + high) // 2
 
@@ -194,6 +200,7 @@ class Dictionary:
 
             j = i
 
+            # shift words right to open the slot at index low
             while j > low:
                 self.__words[j] = self.__words[j - 1]
                 j -= 1
@@ -205,36 +212,37 @@ class Dictionary:
 
     def save(self, filename):
         with open(filename, "w", encoding="utf-8") as f:
-            f.writelines([i + "\n" for i in self.__words])
+            f.writelines([i + "\n" for i in self.__words])  # one word per line
 
         print("Save", filename)
 
     def get_steps(self):
         return self.__steps
 
-    
     def spell_check(self, file):
         try:
             f = open(file, "r", encoding="utf-8")
         except FileNotFoundError:
             print('File', file, 'does not exist!')
-            return
+            return  # stop here if the file is missing
 
         print()
         with f:
+            # punctuation to strip from both ends of each word
             punc = r"""'!()-[]{};:'"\,<>./?@#$%^&*_~'""" + "\u2018\u2019\u201c\u201d\u2026"
 
             for nextline in f:
                 if nextline == "\n":
-                    print()
+                    print()  # keep blank lines
                     continue
 
                 nextwords = nextline.rstrip().split(' ')
 
                 for i in range(len(nextwords)):
                     word = nextwords[i]
-                    word_low = word.strip(punc).lower()
+                    word_low = word.strip(punc).lower()  # clean word used for the search
 
+                    # wrap the original word in () if it is not in the dictionary
                     if not self.bsearch(word_low):
                         nextwords[i] = '(' + word + ')'
 
@@ -242,18 +250,20 @@ class Dictionary:
 
     def anagram(self, word):
         anagrams = []
-        sorted_word = Dictionary.sort_word(word)
+        sorted_word = Dictionary.sort_word(word)  # letters of the key word in order
 
         for current_word in self.__words:
-            if len(current_word) == len(word):
+            if len(current_word) == len(word):  # only same-length words can match
                 sorted_current_word = Dictionary.sort_word(current_word)
 
+                # same sorted letters means same letters, so it is an anagram
                 if sorted_current_word == sorted_word:
                     anagrams.append(current_word)
 
         return anagrams
 
     def compute_score_scrabble(self):
+        # points for each letter
         score_dict = {
             'e': 1, 'a': 1, 'i': 1, 'n': 1, 'r': 1, 't': 1, 'l': 1, 's': 1, 'u': 1,
             'd': 2, 'g': 2,
@@ -272,12 +282,13 @@ class Dictionary:
             for ch in word:
                 score += score_dict.get(ch.lower(), 0)  # 0 for apostrophes, accents, etc.
 
-            self.__score_list.append(score)
+            self.__score_list.append(score)  # same position as the word
 
     def score_sort(self):
         t1 = time.process_time()  # capture time
         n = self.get_size()
 
+        # insertion sort by score, moving each word together with its score
         for i in range(1, n):
             key_word = self.__words[i]
             key_score = self.__score_list[i]
@@ -296,24 +307,27 @@ class Dictionary:
         return t2 - t1
 
     def crack_lock(self, lock):
-        result = Dictionary()
+        result = Dictionary()  # new empty dictionary for the words found
 
+        # nothing to try if there are no letters or a letter has no options
         if len(lock) == 0 or any(len(options) == 0 for options in lock):
             return result
 
         c = 1
 
         for options in lock:
-            c *= len(options)
+            c *= len(options)  # total number of possible combinations
 
-        trials = 6 * c
+        trials = 6 * c  # random tries (stochastic approach from the spec)
 
         for _ in range(trials):
             candidate = ""
 
+            # pick one random option for each letter of the lock
             for options in lock:
                 candidate += options[random.randint(0, len(options) - 1)]
 
+            # keep it only if it is a real word and not already found
             if self.bsearch(candidate):
                 if not result.lsearch(candidate):
                     result.insert(candidate)
