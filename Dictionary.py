@@ -15,6 +15,7 @@ class Dictionary:
         self.__words = []
         self.__index = -1
         self.__steps = 0
+        self.__score_list = []
 
         if filename is None:
             self.__name = "N/A"
@@ -48,9 +49,13 @@ class Dictionary:
     def insert(self, element):
         self.__words.append(element)
 
-    def display(self):
-        for i in self.__words:
-            print(i)
+    def display(self, score=False):
+        if not score:
+            for i in self.__words:
+                print(i)
+        else:
+            for i in range(self.get_size()):
+                print(self.__words[i], self.__score_list[i])
 
     def shuffle(self):
         t1 = time.process_time()
@@ -207,41 +212,33 @@ class Dictionary:
     def get_steps(self):
         return self.__steps
 
+    
     def spell_check(self, file):
-        if file not in [
-            'letter.txt',
-            'sample_english.txt',
-            'sample_french.txt',
-            'sample_spanish.txt'
-        ]:
+        try:
+            f = open(file, "r", encoding="utf-8")
+        except FileNotFoundError:
             print('File', file, 'does not exist!')
-        else:
-            print()
+            return
 
-            with open(file, "r", encoding="utf-8") as f:
-                nextline = f.readline()
+        print()
+        with f:
+            punc = r"""'!()-[]{};:'"\,<>./?@#$%^&*_~'""" + "\u2018\u2019\u201c\u201d\u2026"
 
-                punc = r"""’!()-[]{};:’"\,<>./?@#$%^&*_~’"""
+            for nextline in f:
+                if nextline == "\n":
+                    print()
+                    continue
 
-                while nextline != '':
-                    if nextline == "\n":
-                        print()
-                        nextline = f.readline()
-                        continue
+                nextwords = nextline.rstrip().split(' ')
 
-                    clean_nextline = nextline.rstrip()
-                    nextwords = clean_nextline.split(' ')
+                for i in range(len(nextwords)):
+                    word = nextwords[i]
+                    word_low = word.strip(punc).lower()
 
-                    for i in range(0, len(nextwords)):
-                        word = nextwords[i]
-                        word_low = word.strip(punc).lower()
-                        status = self.bsearch(word_low)
+                    if not self.bsearch(word_low):
+                        nextwords[i] = '(' + word + ')'
 
-                        if status == False:
-                            nextwords[i] = '(' + word + ')'
-
-                    print(' '.join(nextwords))
-                    nextline = f.readline()
+                print(' '.join(nextwords))
 
     def anagram(self, word):
         anagrams = []
@@ -255,6 +252,73 @@ class Dictionary:
                     anagrams.append(current_word)
 
         return anagrams
+
+    def compute_score_scrabble(self):
+        score_dict = {
+            'e': 1, 'a': 1, 'i': 1, 'n': 1, 'r': 1, 't': 1, 'l': 1, 's': 1, 'u': 1,
+            'd': 2, 'g': 2,
+            'b': 3, 'c': 3, 'm': 3, 'p': 3,
+            'f': 4, 'h': 4, 'v': 4, 'w': 4, 'y': 4,
+            'k': 5,
+            'j': 8, 'x': 8,
+            'q': 10, 'z': 10
+        }
+
+        self.__score_list = []  # reset so repeated calls do not duplicate scores
+
+        for word in self.__words:
+            score = 0
+
+            for ch in word:
+                score += score_dict.get(ch.lower(), 0)  # 0 for apostrophes, accents, etc.
+
+            self.__score_list.append(score)
+
+    def score_sort(self):
+        t1 = time.process_time()  # capture time
+        n = self.get_size()
+
+        for i in range(1, n):
+            key_word = self.__words[i]
+            key_score = self.__score_list[i]
+            j = i - 1
+
+            # strict > keeps the sort stable (ties keep original order)
+            while j >= 0 and self.__score_list[j] > key_score:
+                self.__words[j + 1] = self.__words[j]
+                self.__score_list[j + 1] = self.__score_list[j]
+                j -= 1
+
+            self.__words[j + 1] = key_word
+            self.__score_list[j + 1] = key_score
+
+        t2 = time.process_time()  # capture time
+        return t2 - t1
+
+    def crack_lock(self, lock):
+        result = Dictionary()
+
+        if len(lock) == 0 or any(len(options) == 0 for options in lock):
+            return result
+
+        c = 1
+
+        for options in lock:
+            c *= len(options)
+
+        trials = 6 * c
+
+        for _ in range(trials):
+            candidate = ""
+
+            for options in lock:
+                candidate += options[random.randint(0, len(options) - 1)]
+
+            if self.bsearch(candidate):
+                if not result.lsearch(candidate):
+                    result.insert(candidate)
+
+        return result
 
 
 ########################################################################

@@ -25,6 +25,6 @@ for w in mylist: danagram.insert(w)
 danagram.compute_score_scrabble()
 danagram.score_sort()
 ## display info
-print("\n%s anagram(s) found"%danagram.get_size()," with scrabble score")
+print("\n%s anagram(s) found"%danagram.get_size(),"with scrabble score")
 danagram.display(score=True)
 

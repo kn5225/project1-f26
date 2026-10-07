@@ -99152,6 +99152,7 @@ zwieback's
 zygote
 zygote's
 zygotes
+Ångström
 éclair
 éclair's
 éclairs
@@ -99168,4 +99169,3 @@ zygotes
 étude
 étude's
 études
-Ångström
